@@ -1,5 +1,15 @@
 import $ from 'jquery';
 
+//lista de callbacks a serem chamadas
+const loadHtmlSuccessCallbacks = [];
+
+//funcao que adiciona callback na lista
+export function onLoadHtmlSuccess(callback) {
+    if(!loadHtmlSuccessCallbacks.includes(callback)) {
+        loadHtmlSuccessCallbacks.push(callback);
+    }
+}
+
 function loadIncludes(parent) {
 
     //caso nao tenha um componente pai, o corpo inteiro do site e setado
@@ -23,11 +33,13 @@ function loadIncludes(parent) {
                 //remove atributo para essa funcao nao reinterpretar o mesmo elemento
                 $(e).removeAttr('wm-include');
 
+                loadHtmlSuccessCallbacks.forEach(callback => callback(data));
+
                 //faz a funcao ser recursiva, para includes dentro de include
                 loadIncludes(e);
             }
-        })
-    }) 
+        });
+    }); 
 }
 
 //inicia sem paramentro para ser o body o primeiro
