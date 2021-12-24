@@ -4,6 +4,23 @@ import { onLoadHtmlSuccess } from '../core/includes';
 //duracao da animacao
 const duration = 600;
 
+//funcao para mudar qual o botao esta ativo
+function changeActiveButtons(city) {
+
+    //percorre todos os botoes
+    $('button').each(function (i, e){
+
+        //remove a classe active de todos
+        $(e).removeClass('active');
+
+        //se for o botao clicado adiciona a classe active
+        if(e.innerHTML === city || (!city && e.innerHTML === "Todas")){
+            $(e).addClass('active');
+        }
+
+    });
+}
+
 function filterByCity(city) {
     //passa por todos elementos com atributo wm-city
     $('[wm-city]').each(function(i, e) {
@@ -42,13 +59,19 @@ $.fn.cityButtons = function() {
         const btn = $('<button>').addClass(['btn', 'btn-dark']).html(city);
 
         //chama funcao no click
-        btn.on("click",e => filterByCity(city));
+        btn.on("click",e => {
+            filterByCity(city);
+            changeActiveButtons(city);
+        });
         return btn
     });
 
     //cria botao para pesquisar por todas as cidades
     const btnAll = $('<button>').addClass(['btn', 'btn-dark', 'active']).html('Todas');
-    btnAll.on("click", e => filterByCity(null));
+    btnAll.on("click", e => {
+        filterByCity(null);
+        changeActiveButtons(null);
+    });
 
     //adiciona ele no array de botoes
     btns.push(btnAll);
